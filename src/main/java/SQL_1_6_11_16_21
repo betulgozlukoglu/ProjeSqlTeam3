@@ -1,0 +1,54 @@
+-- 1- d001 Departmanındaki tüm çalışanları listele
+use employees;
+select * from employees
+join dept_emp on dept_emp.emp_no=employees.emp_no
+where dept_emp.dept_no='d001';
+
+-- 6.Maaşı 70.000'den yüksek olan "Satış" departmanındaki tüm çalışanları listele.
+
+select * from employees
+join salaries on employees.emp_no=salaries.emp_no
+join dept_emp on employees.emp_no=dept_emp.emp_no
+where dept_emp.dept_no='d007'
+and salaries.salary > 70000;
+
+
+
+-- 11. Find the salary increases for employee with employee number '10102' (using the to_date column in salaries)
+-- Maaş numarası '10102' olan çalışanın maaş artışlarını bul ('to_date' sütununu kullanarak).
+select * from salaries
+where emp_no = '10102'
+order by salary desc,
+to_date desc;
+
+
+-- 16. For each department, identify the employee with the highest single salary ever recorded. List the department name, employee's first name, last name, and the peak salary amount. Order the results by the peak salary in descending order.
+--  Her departman için, kaydedilmiş en yüksek tek maaşı belirle. Departman adını, çalışanın adını, soyadını ve en yüksek maaş tutarını listele. Sonuçları en yüksek maaşa göre azalan şekilde sırala.
+
+select max(salaries.salary),dept_name from departments
+left join dept_emp on dept_emp.dept_no=departments.dept_no
+left join salaries on dept_emp.emp_no= salaries.emp_no
+group by departments.dept_no ;
+
+
+
+-- 21.
+-- a: Find the count of male employees (179973)
+-- Erkek çalışanların sayısını bulun (179973)
+select count(*) as maleemployees from employees
+group by  gender
+having gender='M';
+
+-- b: Determine the count of female employees (120050)
+-- Kadın çalışanların sayısını belirleyin (120050)
+select count(*) as famaleemployees from employees
+group by  gender
+having gender='F';
+-- c: Find the number of male and female employees by grouping:
+-- Gruplandırarak erkek ve kadın çalışanların sayısını bulun:
+select count(*),gender from employees
+group by gender;
+
+-- d: Calculate the total number of employees in the company (300023)
+-- Şirketteki toplam çalışan sayısını hesaplayın (300023)
+select count(*) as toplamçalşaSay from employees ;
