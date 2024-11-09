@@ -1,0 +1,189 @@
+-- 2. List all employees in 'Human Resources' department.
+-- 'İnsan Kaynakları' departmanındaki tüm çalışanları listele.
+
+SELECT
+    employees.emp_no,
+    employees.first_name,
+    employees.last_name,
+    departments.dept_name
+FROM
+    employees
+        JOIN
+    dept_emp ON employees.emp_no = dept_emp.emp_no
+        JOIN
+    departments ON dept_emp.dept_no = departments.dept_no
+WHERE
+    departments.dept_name = 'Human Resources';
+
+
+
+
+-- 7. This query retrieves employees who have salaries between 50000 and 100000.
+-- Bu sorgu, maaşı 50.000 ile 100.000 arasında olan çalışanları getirir.
+
+SELECT
+    employees.emp_no,
+    employees.first_name,
+    employees.last_name,
+    salaries.salary
+FROM
+    employees
+        JOIN
+    salaries ON employees.emp_no = salaries.emp_no
+WHERE
+    salary > '50000' AND salary < '100000';
+
+
+
+
+
+-- 12. Find the employee with the highest salary
+-- - En yüksek maaşa sahip çalışanı bul.
+
+SELECT
+    employees.emp_no,
+    employees.first_name,
+    employees.last_name,
+    salaries.salary
+FROM
+    employees
+        JOIN
+    salaries ON salaries.emp_no = employees.emp_no
+WHERE
+    salaries.salary = (SELECT
+            MAX(salary)
+        FROM
+            salaries);
+
+
+
+
+
+
+
+-- 17. Identify the employees in each department who have the highest average salary. List the
+-- department name, employee's first name, last name, and the average salary. Order the results by
+-- average salary in descending order, showing only those with the highest average salary within their
+-- department.
+-- - Her departmandaki en yüksek ortalama maaşa sahip çalışanları belirle. Departman adını,
+-- çalışanın adını, soyadını ve ortalama maaşı listele. Sonuçları departmanlarına göre azalan şekilde
+-- sırala, sadece kendi departmanlarında en yüksek ortalama maaşa sahip olanları göster.
+
+
+SELECT
+    d.dept_name,
+    e.first_name,
+    e.last_name,
+    AVG(s.salary) AS avg_salary
+FROM
+    employees e
+        JOIN
+    dept_emp de ON e.emp_no = de.emp_no
+        JOIN
+    departments d ON de.dept_no = d.dept_no
+        JOIN
+    salaries s ON e.emp_no = s.emp_no
+GROUP BY d.dept_name , e.emp_no , e.first_name , e.last_name
+ORDER BY avg_salary DESC;
+
+
+
+
+
+
+-- 22.
+-- -- a: Find out how many employees have unique first names (1275)
+-- -- Kaç çalışanın benzersiz ilk adı olduğunu bulun (1275)
+
+
+SELECT
+    COUNT(*) AS unique_first_name_count
+FROM
+    (SELECT
+        first_name
+    FROM
+        employees
+    GROUP BY first_name) AS unique_names;
+
+
+-- -- b: Identify the number of distinct department names (9)
+-- -- Farklı bölüm adlarının sayısını belirleyin (9)
+
+SELECT COUNT(DISTINCT dept_name) AS distinct_department_count
+FROM departments;
+
+
+
+
+
+
+
+-- 27. List all employees and managers in the D005 department
+-- -- D005 bölümündeki tüm çalışanları ve yöneticileri listele
+
+
+SELECT
+    employees.emp_no, employees.first_name, employees.last_name
+FROM
+    employees
+        JOIN
+    dept_emp ON employees.emp_no = dept_emp.emp_no
+WHERE
+    dept_emp.dept_no = 'd005'
+UNION SELECT
+    employees.emp_no, employees.first_name, employees.last_name
+FROM
+    dept_manager
+        JOIN
+    employees ON employees.emp_no = dept_manager.emp_no
+WHERE
+    dept_manager.dept_no = 'd005';
+
+
+
+
+
+    -- 32. Find the entire position history for employee with emp. no '10102'
+    -- -- '10102' numaralı çalışanın tüm pozisyon geçmişini bulun
+
+    SELECT
+        departments.dept_name,
+        dept_emp.from_date,
+        dept_emp.to_date,
+        'Employee' AS position
+    FROM
+        dept_emp
+            JOIN
+        departments ON dept_emp.dept_no = departments.dept_no
+    WHERE
+        dept_emp.emp_no = '10102'
+    UNION ALL SELECT
+        departments.dept_name,
+        dept_manager.from_date,
+        dept_manager.to_date,
+        'Manager' AS position
+    FROM
+        dept_manager
+            JOIN
+        departments ON dept_manager.dept_no = departments.dept_no
+    WHERE
+        dept_manager.emp_no = '10102'
+    ORDER BY from_date;
+
+
+
+
+
+
+-- 37. Find the latest title information for each employee
+-- -- Her çalışanın en son unvan bilgisini bulma
+
+SELECT
+    titles.emp_no, titles.title, MAX(titles.to_date) AS latest_title_date
+FROM
+    titles
+GROUP BY titles.emp_no;
+
+
+
+
