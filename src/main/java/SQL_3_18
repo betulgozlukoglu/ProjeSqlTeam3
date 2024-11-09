@@ -1,0 +1,41 @@
+-- TASKS
+-- ---------------------
+--  3. Calculate the average salary of all employees
+
+select avg(salary) as AverageSalaryofEmployees
+from salaries;
+
+-- 8. Calculate the average salary for each department (by department number or department name)
+
+select avg(salary) AS AverageSalary,dept_emp.dept_no as DepartmentNo
+from salaries
+left join dept_emp ON dept_emp.emp_no=salaries.emp_no
+group by dept_no;
+
+-- 13. Find the latest salaries for each employee
+
+select *
+from salaries
+where to_date like'9999%';
+
+--  18. List the names, last names, and hire dates in alphabetical order of all employees hired before
+ -- January 01, 1990.
+
+select first_name,last_name,hire_date
+from employees
+where hire_date<'1990-01-01';
+
+-- 23. List the number of employees in each department
+select count(emp_no) as ÇalışanSayısı,departments.dept_name
+from dept_emp
+left join departments ON departments.dept_no=dept_emp.dept_no
+group by dept_emp.dept_no;
+
+
+
+
+
+
+
+
+
